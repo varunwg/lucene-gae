@@ -25,9 +25,6 @@ public class BlobStoreDirectory extends Directory {
 	@Override
 	public void close() throws IOException {
 
-		// TODO: ver o que fazer
-		System.out.println("close");
-
 	}
 
 	@Override
