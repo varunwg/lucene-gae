@@ -8,20 +8,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.lucene.gae.TestUtil;
-import com.googlecode.lucene.gae.blobstore.ArrayUtils;
-import com.googlecode.lucene.gae.datastore.DataStoreDirectory;
+import com.googlecode.lucene.gae.TestUtils;
 
 public class TestWriter2 {
 
 	@Before
 	public void setUp() throws Exception {
-		TestUtil.setUp();
+		TestUtils.setUp();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		TestUtil.tearDown();
+		TestUtils.tearDown();
 	}
 
 	@Test
@@ -29,7 +27,7 @@ public class TestWriter2 {
 
 		Directory dir = new DataStoreDirectory();
 
-		TestUtil.write(dir, "teste");
+		TestUtils.write(dir, "teste");
 
 	}
 
@@ -38,11 +36,11 @@ public class TestWriter2 {
 
 		Directory dir = new DataStoreDirectory();
 
-		TestUtil.write(dir, "teste1");
+		TestUtils.write(dir, "teste1");
 
 		Thread.sleep(1000);
 
-		TestUtil.write(dir, "teste2");
+		TestUtils.write(dir, "teste2");
 
 	}
 
@@ -52,14 +50,14 @@ public class TestWriter2 {
 		String words = "teste2";
 
 		Directory gaeDir = new DataStoreDirectory();
-		Directory sysDir = TestUtil.createTestDirectory();
+		Directory sysDir = TestUtils.createTestDirectory();
 
-		TestUtil.write(sysDir, words);
+		TestUtils.write(sysDir, words);
 
 		// index are time aware
 		Thread.sleep(1000);
 
-		TestUtil.write(gaeDir, words);
+		TestUtils.write(gaeDir, words);
 
 		compareDirs(sysDir, gaeDir);
 
@@ -71,14 +69,14 @@ public class TestWriter2 {
 		String[] words = new String[] { "teste1", "teste2", "teste3" };
 
 		Directory gaeDir = new DataStoreDirectory();
-		Directory sysDir = TestUtil.createTestDirectory();
+		Directory sysDir = TestUtils.createTestDirectory();
 
-		TestUtil.write(sysDir, words);
+		TestUtils.write(sysDir, words);
 
 		// index are time aware
 		Thread.sleep(1000);
 
-		TestUtil.write(gaeDir, words);
+		TestUtils.write(gaeDir, words);
 
 		compareDirs(sysDir, gaeDir);
 
@@ -97,19 +95,19 @@ public class TestWriter2 {
 			byte[] gaeBytes = readIndex(gaeIn);
 
 			if (!"segments_1".equals(name)) {
-				assertEquals(name, ArrayUtils.getArray(fileBytes), ArrayUtils.getArray(gaeBytes));
+				assertEquals(name, TestUtils.getArray(fileBytes), TestUtils.getArray(gaeBytes));
 			} else {
 
-				byte[] fileSegmentHead = ArrayUtils.subArray(fileBytes, 0, 9);
-				byte[] gaeSegmentHead = ArrayUtils.subArray(gaeBytes, 0, 9);
+				byte[] fileSegmentHead = TestUtils.subArray(fileBytes, 0, 9);
+				byte[] gaeSegmentHead = TestUtils.subArray(gaeBytes, 0, 9);
 
-				byte[] fileSegmentBody = ArrayUtils.subArray(fileBytes, 12, fileBytes.length - 4);
-				byte[] gaeSegmentBody = ArrayUtils.subArray(gaeBytes, 12, fileBytes.length - 4);
+				byte[] fileSegmentBody = TestUtils.subArray(fileBytes, 12, fileBytes.length - 4);
+				byte[] gaeSegmentBody = TestUtils.subArray(gaeBytes, 12, fileBytes.length - 4);
 
-				assertEquals(name, ArrayUtils.getArray(fileSegmentHead),
-						ArrayUtils.getArray(gaeSegmentHead));
-				assertEquals(name, ArrayUtils.getArray(fileSegmentBody),
-						ArrayUtils.getArray(gaeSegmentBody));
+				assertEquals(name, TestUtils.getArray(fileSegmentHead),
+						TestUtils.getArray(gaeSegmentHead));
+				assertEquals(name, TestUtils.getArray(fileSegmentBody),
+						TestUtils.getArray(gaeSegmentBody));
 
 			}
 
