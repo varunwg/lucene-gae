@@ -2,7 +2,6 @@ package com.googlecode.lucene.gae.blobstore;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.logging.Logger;
 
 import org.apache.lucene.store.BufferedIndexInput;
 
@@ -13,8 +12,6 @@ public class BlobStoreIndexInput extends BufferedIndexInput {
 
 	private FileReadChannel			reader;
 	private AppEngineFileWrapper	file;
-
-	private Logger					log	= Logger.getLogger("Read");
 
 	public BlobStoreIndexInput(AppEngineFileWrapper file) throws IOException {
 		this.reader = file.openReadChannel();
@@ -37,10 +34,7 @@ public class BlobStoreIndexInput extends BufferedIndexInput {
 
 		ByteBuffer toRead = ByteBuffer.wrap(b, offset, length);
 
-		int read = reader.read(toRead);
-
-		log.info("Read (" + read + ") " + file.getName() + " = "
-				+ ArrayUtils.getArray(b, offset, length));
+		reader.read(toRead);
 
 	}
 

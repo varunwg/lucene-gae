@@ -7,14 +7,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.lucene.gae.TestUtil;
-import com.googlecode.lucene.gae.TestUtil.IndexStatus;
+import com.googlecode.lucene.gae.TestUtils;
+import com.googlecode.lucene.gae.TestUtils.IndexStatus;
 
 public class TestDelete {
 
 	@Before
 	public void setUp() throws Exception {
-		TestUtil.setUp();
+		TestUtils.setUp();
 	}
 
 	@After
@@ -28,15 +28,15 @@ public class TestDelete {
 		long numDocs = 2;
 		long maxDocs = 2;
 
-		Directory dir = TestUtil.createTestDirectory();
+		Directory dir = TestUtils.createTestDirectory();
 
-		TestUtil.write(dir, "teste 1");
-		TestUtil.write(dir, "teste 2");
-		TestUtil.write(dir, "teste 3");
+		TestUtils.write(dir, "teste 1");
+		TestUtils.write(dir, "teste 2");
+		TestUtils.write(dir, "teste 3");
 
-		TestUtil.delete(dir, "1");
+		TestUtils.delete(dir, "1");
 
-		IndexStatus status = TestUtil.getStatus(dir);
+		IndexStatus status = TestUtils.getStatus(dir);
 
 		assertEquals(numDocs, status.getNumDocs());
 		assertEquals(maxDocs, status.getMaxDoc());

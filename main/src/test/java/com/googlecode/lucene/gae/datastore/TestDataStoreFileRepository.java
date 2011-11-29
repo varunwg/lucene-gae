@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
-import com.googlecode.lucene.gae.TestUtil;
+import com.googlecode.lucene.gae.TestUtils;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFile;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFileRepository;
 
@@ -26,7 +26,7 @@ public class TestDataStoreFileRepository {
 	@Before
 	public void setUp() throws Exception {
 
-		TestUtil.setUp();
+		TestUtils.setUp();
 
 		repository = new DataStoreFileRepository("teste");
 
@@ -41,7 +41,7 @@ public class TestDataStoreFileRepository {
 
 	@After
 	public void tearDown() throws Exception {
-		TestUtil.tearDown();
+		TestUtils.tearDown();
 	}
 
 	@Test

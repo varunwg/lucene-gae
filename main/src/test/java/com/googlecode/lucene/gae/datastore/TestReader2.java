@@ -8,19 +8,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.lucene.gae.TestUtil;
+import com.googlecode.lucene.gae.TestUtils;
 import com.googlecode.lucene.gae.datastore.DataStoreDirectory;
 
 public class TestReader2 {
 
 	@Before
 	public void setUp() throws Exception {
-		TestUtil.setUp();
+		TestUtils.setUp();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		TestUtil.tearDown();
+		TestUtils.tearDown();
 	}
 
 	@Test
@@ -32,9 +32,9 @@ public class TestReader2 {
 
 		String[] texts = { "Lucene in Action" };
 
-		TestUtil.write(gaeDir, texts);
+		TestUtils.write(gaeDir, texts);
 
-		TopDocs results = TestUtil.search(gaeDir, "Lucene");
+		TopDocs results = TestUtils.search(gaeDir, "Lucene");
 
 		assertEquals(hits, results.totalHits);
 
@@ -49,9 +49,9 @@ public class TestReader2 {
 
 		String[] texts = { "Lucene in Action", "How Lucene Works", "Another Directory of Lucene" };
 
-		TestUtil.write(gaeDir, texts);
+		TestUtils.write(gaeDir, texts);
 
-		TopDocs results = TestUtil.search(gaeDir, "Lucene");
+		TopDocs results = TestUtils.search(gaeDir, "Lucene");
 
 		assertEquals(hits, results.totalHits);
 

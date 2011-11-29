@@ -2,7 +2,7 @@ package com.googlecode.lucene.gae.blobstore;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.logging.Logger;
+import java.util.Arrays;
 
 import org.apache.lucene.store.BufferedIndexOutput;
 
@@ -14,8 +14,6 @@ public class BlobStoreIndexOutput extends BufferedIndexOutput {
 	private AppEngineFileWrapper	file;
 
 	private byte[]					bytes	= new byte[0];
-
-	private Logger					log		= Logger.getLogger("Write");
 
 	public BlobStoreIndexOutput(AppEngineFileWrapper file) throws IOException {
 		this.file = file;
@@ -45,12 +43,10 @@ public class BlobStoreIndexOutput extends BufferedIndexOutput {
 
 		if (length > 0) {
 
-			byte[] subarray = ArrayUtils.subArray(b, offset, length);
+			byte[] subarray = Arrays.copyOfRange(b, offset, length);
 
 			int currentPos = (int) getFilePointer();
 			int currentLen = (int) file.getLength();
-
-			log.info("Status: currentPos=" + currentPos + ",  currentLen=" + currentLen);
 
 			int totalLen = 0;
 			int pos = 0;
@@ -68,21 +64,12 @@ public class BlobStoreIndexOutput extends BufferedIndexOutput {
 
 			if (totalLen > currentLen) {
 				int dif = totalLen - currentLen;
-				bytes = ArrayUtils.addLenght(bytes, dif);
+				bytes = new byte[bytes.length + length];
+				System.arraycopy(bytes, 0, bytes, 0, bytes.length);
 				file.incrementLenght(dif);
-				log.info("Add (" + dif + ") " + file.getName() + " Lenght");
 			}
 
-			try {
-				ArrayUtils.insert(bytes, subarray, pos);
-				log.info("Write (" + length + ") from " + pos + " in " + file.getName() + " = "
-						+ ArrayUtils.getArray(subarray));
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
-			log.info("Total (" + file.getLength() + ") " + file.getName() + " = "
-					+ ArrayUtils.getArray(bytes));
+			System.arraycopy(subarray, 0, bytes, pos, subarray.length);
 
 		}
 

@@ -1,6 +1,7 @@
 package com.googlecode.lucene.gae;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -23,14 +24,14 @@ import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
-public class TestUtil {
+public class TestUtils {
 
 	public static class IndexStatus {
 
-		private boolean hasDeletions;
-		private boolean optimized;
-		private long maxDoc;
-		private long numDocs;
+		private boolean	hasDeletions;
+		private boolean	optimized;
+		private long	maxDoc;
+		private long	numDocs;
 
 		public long getMaxDoc() {
 			return maxDoc;
@@ -66,14 +67,14 @@ public class TestUtil {
 
 	}
 
-	public static final String TEST_INDEX_PATH = "./lucene";
-	public static final String TEST_INDEX_FIELD = "title";
+	public static final String				TEST_INDEX_PATH		= "./lucene";
+	public static final String				TEST_INDEX_FIELD	= "title";
 
-	private static final Version TEST_LUCENE_VERSION = Version.LUCENE_33;
-	private static final Analyzer ANALYZER = new StandardAnalyzer(TEST_LUCENE_VERSION);
-	private static final File TEST_INDEX_DIR = new File(TEST_INDEX_PATH);
+	private static final Version			TEST_LUCENE_VERSION	= Version.LUCENE_33;
+	private static final Analyzer			ANALYZER			= new StandardAnalyzer(TEST_LUCENE_VERSION);
+	private static final File				TEST_INDEX_DIR		= new File(TEST_INDEX_PATH);
 
-	private static LocalServiceTestHelper helper;
+	private static LocalServiceTestHelper	helper;
 
 	public static Directory createTestDirectory() throws Exception {
 		return new SimpleFSDirectory(TEST_INDEX_DIR);
@@ -83,7 +84,7 @@ public class TestUtil {
 
 		IndexReader reader = IndexReader.open(dir, false);
 
-		TopDocs search = TestUtil.search(dir, query);
+		TopDocs search = TestUtils.search(dir, query);
 
 		for (ScoreDoc doc : search.scoreDocs) {
 			reader.deleteDocument(doc.doc);
@@ -166,6 +167,43 @@ public class TestUtil {
 
 		writer.close();
 
+	}
+
+	public static String getArray(byte[] b) {
+
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("[");
+
+		for (int i = 0; i < b.length; i++) {
+			byte t = b[i];
+			builder.append(t).append(",");
+		}
+
+		builder.append("]");
+
+		return builder.toString();
+
+	}
+
+	public static String getArray(byte[] b, int offset, int length) {
+		return getArray(subArray(b, offset, length));
+	}
+
+	public static void insert(byte[] target, byte[] source, int pos) {
+		System.arraycopy(source, 0, target, pos, source.length);
+	}
+
+	public static void printArray(byte[] b) {
+		System.out.println(getArray(b));
+	}
+
+	public static void printArray(byte[] b, int offset, int length) {
+		printArray(subArray(b, offset, length));
+	}
+
+	public static byte[] subArray(byte[] bytes, int offset, int length) {
+		return Arrays.copyOfRange(bytes, offset, length);
 	}
 
 }
