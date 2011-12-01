@@ -10,8 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.util.IOUtils;
 
 import servlet.LuceneUtils;
 
