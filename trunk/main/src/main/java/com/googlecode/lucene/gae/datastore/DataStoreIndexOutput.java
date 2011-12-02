@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.lucene.store.IndexOutput;
 
 import com.googlecode.lucene.gae.datastore.file.DataStoreFile;
-import com.googlecode.lucene.gae.datastore.file.DataStoreFilePart;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFileRepository;
 
 public class DataStoreIndexOutput extends IndexOutput {
@@ -69,7 +68,7 @@ public class DataStoreIndexOutput extends IndexOutput {
 		}
 
 		byte[] src = getBytes(b, off, len);
-		long writed = writeInFile(src);
+		long writed = file.write(src, pos, len);
 
 		length = newcount;
 		pos += writed;
@@ -107,48 +106,6 @@ public class DataStoreIndexOutput extends IndexOutput {
 	private boolean isInvalid(byte[] b, int off, int len) {
 		return (off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length)
 				|| ((off + len) < 0);
-	}
-
-	private long writeInFile(byte[] src) {
-
-		long position = pos;
-
-		int begin = 0;
-		int end = src.length;
-
-		while (begin < end) {
-
-			int left = end - begin;
-			int start = DataStoreFilePart.getStartForPos(position);
-			int canWrite = DataStoreFilePart.MAX_SIZE - start;
-
-			int length = left;
-
-			if (canWrite < left) {
-				length = canWrite;
-			}
-
-			int index = DataStoreFilePart.getIndexForPos(position);
-			DataStoreFilePart part = file.getPart(index);
-			byte[] dest = part.getBytes();
-
-			System.arraycopy(src, begin, dest, start, length);
-
-			int newLength = length + start;
-
-			if (newLength < part.getLength()) {
-				newLength = part.getLength();
-			}
-
-			part.updateLength(newLength);
-
-			position += length;
-			begin += length;
-
-		}
-
-		return end;
-
 	}
 
 }

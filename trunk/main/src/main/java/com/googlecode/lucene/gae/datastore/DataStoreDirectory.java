@@ -100,9 +100,7 @@ public class DataStoreDirectory extends Directory {
 
 		DataStoreFile file = getFileByName(name, false);
 
-		long now = System.currentTimeMillis();
-
-		file.updateLastModified(now);
+		file.touch();
 
 		repository.put(file);
 
