@@ -72,9 +72,9 @@ public class TestDataStoreFileRepository {
 
 	private DataStoreFile createDataStoreFile(String name) throws IOException {
 		DataStoreFile result = new DataStoreFile(name);
-		result.createPart();
-		result.createPart();
-		result.createPart();
+		result.createNewPart();
+		result.createNewPart();
+		result.createNewPart();
 		return result ;
 	}
 

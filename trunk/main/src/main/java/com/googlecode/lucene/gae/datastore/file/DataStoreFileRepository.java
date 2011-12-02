@@ -58,13 +58,17 @@ public class DataStoreFileRepository {
 	}
 
 	public DataStoreFile get(String name) {
+		return get(name, true);
+	}
+
+	public DataStoreFile get(String name, boolean full) {
 
 		Entity entity = getFileEntityByName(name);
 
 		DataStoreFile result = null;
 
 		if (entity != null) {
-			result = convertToFile(entity);
+			result = convertToFile(entity, full);
 		}
 
 		return result;
@@ -72,12 +76,16 @@ public class DataStoreFileRepository {
 	}
 
 	public List<DataStoreFile> list() {
+		return list(true);
+	}
+
+	public List<DataStoreFile> list(boolean full) {
 
 		List<DataStoreFile> result = new ArrayList<DataStoreFile>();
 
 		for (String name : listNames()) {
 			Entity entity = getFileEntityByName(name);
-			result.add(convertToFile(entity));
+			result.add(convertToFile(entity, full));
 		}
 
 		return result;
@@ -130,7 +138,7 @@ public class DataStoreFileRepository {
 
 		Entity fEntity = new Entity(FILE_KIND, file.getName());
 		fEntity.setProperty("length", file.getLength());
-		fEntity.setProperty("modified", file.getLastModified());
+		fEntity.setProperty("lastModified", file.getLastModified());
 		fEntity.setProperty("deleted", file.isDeleted());
 		fEntity.setProperty("parts", file.getParts().size());
 
@@ -138,11 +146,15 @@ public class DataStoreFileRepository {
 
 		for (DataStoreFilePart part : file.getParts()) {
 
-			Entity pEntity = new Entity(FILE_PART_KIND, part.getName(), fEntity.getKey());
-			pEntity.setProperty("bytes", new ShortBlob(part.getBytes()));
-			pEntity.setProperty("length", part.getLength());
+			if (part.isModified()) {
 
-			entities.add(pEntity);
+				Entity pEntity = new Entity(FILE_PART_KIND, part.getName(), fEntity.getKey());
+				pEntity.setProperty("bytes", new ShortBlob(part.getBytes()));
+				pEntity.setProperty("length", part.getLength());
+
+				entities.add(pEntity);
+
+			}
 
 		}
 
@@ -150,30 +162,34 @@ public class DataStoreFileRepository {
 
 	}
 
-	private DataStoreFile convertToFile(Entity entity) {
+	private DataStoreFile convertToFile(Entity entity, boolean full) {
 
 		String fName = entity.getKey().getName();
 
 		DataStoreFile file = new DataStoreFile(fName);
-		file.setLastModified((Long) entity.getProperty("modified"));
+		file.setLastModified((Long) entity.getProperty("lastModified"));
 		file.setDeleted((Boolean) entity.getProperty("deleted"));
 
-		Long size = (Long) entity.getProperty("parts");
+		if (full) {
 
-		for (int i = 0; i < size; i++) {
+			Long size = (Long) entity.getProperty("parts");
 
-			String pName = fName + "_" + i;
+			for (int i = 0; i < size; i++) {
 
-			Entity pEntity = getPartEntityByName(fName, pName);
+				String pName = fName + "_" + i;
 
-			DataStoreFilePart part = new DataStoreFilePart(pName);
+				Entity pEntity = getPartEntityByName(fName, pName);
 
-			Long length = (Long) pEntity.getProperty("length");
-			ShortBlob blob = (ShortBlob) pEntity.getProperty("bytes");
-			part.setLength(length.intValue());
-			part.setBytes(blob.getBytes());
+				DataStoreFilePart part = new DataStoreFilePart(pName);
 
-			file.getParts().add(part);
+				Long length = (Long) pEntity.getProperty("length");
+				ShortBlob blob = (ShortBlob) pEntity.getProperty("bytes");
+				part.setLength(length.intValue());
+				part.setBytes(blob.getBytes());
+
+				file.getParts().add(part);
+
+			}
 
 		}
 

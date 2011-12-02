@@ -45,25 +45,25 @@ public class DataStoreDirectory extends Directory {
 
 	@Override
 	public void deleteFile(String name) throws IOException {
+		repository.delete(name);
+	}
 
-		DataStoreFile file = repository.get(name);
+	@Override
+	public boolean fileExists(String name) throws IOException {
 
-		if (file != null) {
-			file.delete();
-			repository.put(file);
+		try {
+			DataStoreFile file = getFileByName(name, false);
+			return file != null;
+		} catch (FileNotFoundException e) {
+			return false;
 		}
 
 	}
 
 	@Override
-	public boolean fileExists(String name) throws IOException {
-		return repository.get(name) != null;
-	}
-
-	@Override
 	public long fileLength(String name) throws IOException {
 
-		DataStoreFile file = getFileByName(name);
+		DataStoreFile file = getFileByName(name, true);
 
 		return file.getLength();
 
@@ -72,7 +72,7 @@ public class DataStoreDirectory extends Directory {
 	@Override
 	public long fileModified(String name) throws IOException {
 
-		DataStoreFile file = getFileByName(name);
+		DataStoreFile file = getFileByName(name, false);
 
 		return file.getLastModified();
 
@@ -89,7 +89,7 @@ public class DataStoreDirectory extends Directory {
 	@Override
 	public IndexInput openInput(String name) throws IOException {
 
-		DataStoreFile file = getFileByName(name);
+		DataStoreFile file = getFileByName(name, true);
 
 		return new DataStoreIndexInput(file);
 
@@ -98,7 +98,7 @@ public class DataStoreDirectory extends Directory {
 	@Override
 	public void touchFile(String name) throws IOException {
 
-		DataStoreFile file = getFileByName(name);
+		DataStoreFile file = getFileByName(name, false);
 
 		long now = System.currentTimeMillis();
 
@@ -108,10 +108,9 @@ public class DataStoreDirectory extends Directory {
 
 	}
 
-	private DataStoreFile getFileByName(String name)
-			throws FileNotFoundException {
+	private DataStoreFile getFileByName(String name, boolean full) throws FileNotFoundException {
 
-		DataStoreFile file = repository.get(name);
+		DataStoreFile file = repository.get(name, full);
 
 		if (file == null) {
 			throw new FileNotFoundException(name);
