@@ -27,6 +27,10 @@ public class BaseHttpServlet extends HttpServlet {
 	protected String getText(HttpServletRequest req) {
 		return req.getParameter("text");
 	}
+	
+	protected String getSearch(HttpServletRequest req) {
+		return req.getParameter("q");
+	}
 
 	protected void redirectToIndex(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {

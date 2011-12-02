@@ -34,14 +34,14 @@ public class SearchServlet extends BaseHttpServlet {
 			throws ServletException, IOException {
 
 		Integer index = getIndex(req);
-		String text = getText(req);
+		String search = getSearch(req);
 
-		if (index != null && text != null) {
+		if (index != null && search != null && !search.isEmpty()) {
 
 			IndexSearcher searcher = LuceneUtils.getSearcher(index);
 			IndexReader reader = searcher.getIndexReader();
 
-			TopDocs topDocs = searcher.search(createQuery("text", text), 10);
+			TopDocs topDocs = searcher.search(createQuery("text", search), 10);
 
 			Map<String, String> results = new LinkedHashMap<String, String>();
 
@@ -53,7 +53,7 @@ public class SearchServlet extends BaseHttpServlet {
 			}
 
 			req.setAttribute("results", results);
-			req.setAttribute("text", text);
+			req.setAttribute("q", search);
 			req.setAttribute("index", index.toString());
 
 		}
