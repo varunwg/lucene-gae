@@ -64,9 +64,8 @@ public class DataStoreIndexOutput extends IndexOutput {
 
 		long newcount = calculateNewCount(len);
 
-		// extend file
 		while (newcount > file.available()) {
-			file.createPart();
+			file.createNewPart();
 		}
 
 		byte[] src = getBytes(b, off, len);
@@ -142,6 +141,7 @@ public class DataStoreIndexOutput extends IndexOutput {
 			}
 
 			part.updateLength(newLength);
+
 			position += length;
 			begin += length;
 

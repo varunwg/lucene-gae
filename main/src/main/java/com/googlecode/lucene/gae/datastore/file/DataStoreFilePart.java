@@ -25,6 +25,8 @@ public class DataStoreFilePart {
 	private int				length	= 0;
 	private byte[]			bytes	= new byte[MAX_SIZE];
 
+	private boolean			modified;
+
 	public DataStoreFilePart(String name) {
 		this.name = name;
 	}
@@ -41,8 +43,17 @@ public class DataStoreFilePart {
 		return name;
 	}
 
+	public boolean isModified() {
+		return modified;
+	}
+
+	public void markToModify() {
+		modified = true;
+	}
+
 	public void updateLength(int length) {
 		setLength(length);
+		markToModify();
 	}
 
 	void setBytes(byte[] bytes) {

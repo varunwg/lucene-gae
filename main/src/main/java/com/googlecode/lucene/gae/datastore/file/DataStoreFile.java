@@ -20,15 +20,12 @@ public class DataStoreFile {
 		return parts.size() * DataStoreFilePart.MAX_SIZE;
 	}
 
-	public void createPart() {
+	public void createNewPart() {
 
 		DataStoreFilePart part = new DataStoreFilePart(this.name + "_" + parts.size());
+		part.markToModify();
 		parts.add(part);
 
-	}
-
-	public void delete() {
-		setDeleted(true);
 	}
 
 	public long getLastModified() {
@@ -57,6 +54,10 @@ public class DataStoreFile {
 
 	public boolean isDeleted() {
 		return deleted;
+	}
+
+	public void markToDelete() {
+		setDeleted(true);
 	}
 
 	public void updateLastModified(long now) {
