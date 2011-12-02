@@ -31,8 +31,9 @@ public class DataStoreFilePart {
 		this.name = name;
 	}
 
-	public byte[] getBytes() {
-		return bytes;
+	public DataStoreFilePart(String name, boolean isNew) {
+		this(name);
+		modified = isNew;
 	}
 
 	public int getLength() {
@@ -47,13 +48,28 @@ public class DataStoreFilePart {
 		return modified;
 	}
 
-	public void markToModify() {
-		modified = true;
+	public void read(byte[] dest, int begin, int pos, int len) {
+		System.arraycopy(bytes, pos, dest, begin, len);
 	}
 
-	public void updateLength(int length) {
-		setLength(length);
-		markToModify();
+	public void write(byte[] src, int begin, int pos, int len) {
+
+		System.arraycopy(src, begin, bytes, pos, len);
+
+		int newLength = len + pos;
+
+		if (newLength < this.length) {
+			newLength = this.length;
+		}
+
+		this.length = newLength;
+
+		modified = true;
+
+	}
+
+	byte[] getBytes() {
+		return bytes;
 	}
 
 	void setBytes(byte[] bytes) {

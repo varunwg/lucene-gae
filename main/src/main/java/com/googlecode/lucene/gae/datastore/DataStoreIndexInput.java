@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.lucene.store.IndexInput;
 
 import com.googlecode.lucene.gae.datastore.file.DataStoreFile;
-import com.googlecode.lucene.gae.datastore.file.DataStoreFilePart;
 
 public class DataStoreIndexInput extends IndexInput {
 
@@ -60,8 +59,9 @@ public class DataStoreIndexInput extends IndexInput {
 			return;
 		}
 
-		byte[] src = readFromFile(len);
-		System.arraycopy(src, 0, b, off, len);
+		byte[] bytes = file.read(pos, len);
+
+		System.arraycopy(bytes, 0, b, off, len);
 
 		pos += len;
 
@@ -74,42 +74,6 @@ public class DataStoreIndexInput extends IndexInput {
 
 	private boolean isInvalid(byte[] b, int off, int len) {
 		return off < 0 || len < 0 || len > b.length - off;
-	}
-
-	private byte[] readFromFile(int len) {
-
-		byte[] bytes = new byte[len];
-
-		long position = pos;
-
-		int begin = 0;
-		int end = len;
-
-		while (begin < end) {
-
-			int left = end - begin;
-			int start = DataStoreFilePart.getStartForPos(position);
-			int canRead = DataStoreFilePart.MAX_SIZE - start;
-
-			int length = left;
-
-			if (canRead < left) {
-				length = canRead;
-			}
-
-			int index = DataStoreFilePart.getIndexForPos(position);
-			DataStoreFilePart part = file.getPart(index);
-			byte[] src = part.getBytes();
-
-			System.arraycopy(src, start, bytes, begin, length);
-
-			position += length;
-			begin += length;
-
-		}
-
-		return bytes;
-
 	}
 
 }
