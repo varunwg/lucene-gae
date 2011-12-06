@@ -25,7 +25,6 @@ public class LuceneUtils {
 	public static final int						NUMBER_OF_DIRECTORYS	= 10;
 
 	private static Map<Integer, Directory>		directorys				= new HashMap<Integer, Directory>();
-
 	private static Map<Integer, IndexSearcher>	searchers				= new HashMap<Integer, IndexSearcher>();
 	private static Map<Integer, IndexWriter>	writers					= new HashMap<Integer, IndexWriter>();
 
@@ -64,17 +63,18 @@ public class LuceneUtils {
 
 		Profile prof = new Profile("getIndexSearcher").start();
 
-		Directory directory = getDirectory(index);
-
 		IndexSearcher result = null;
 
-		synchronized (directory) {
+		synchronized (searchers) {
+
 			if (!searchers.containsKey(index)) {
+				Directory directory = getDirectory(index);
 				result = createSearcher(directory, index);
 				searchers.put(index, result);
 			} else {
 				result = searchers.get(index);
 			}
+
 		}
 
 		prof.end().log();
@@ -87,17 +87,18 @@ public class LuceneUtils {
 
 		Profile prof = new Profile("getIndexWriter").start();
 
-		Directory directory = getDirectory(index);
-
 		IndexWriter result = null;
 
-		synchronized (directory) {
+		synchronized (writers) {
+
 			if (!writers.containsKey(index)) {
+				Directory directory = getDirectory(index);
 				result = createWriter(directory, index);
 				writers.put(index, result);
 			} else {
 				result = writers.get(index);
 			}
+
 		}
 
 		prof.end().log();
@@ -112,9 +113,7 @@ public class LuceneUtils {
 
 		try {
 
-			Directory directory = getDirectory(index);
-
-			synchronized (directory) {
+			synchronized (searchers) {
 
 				if (searchers.containsKey(index)) {
 					IndexSearcher searcher = searchers.remove(index);
@@ -137,9 +136,7 @@ public class LuceneUtils {
 
 		try {
 
-			Directory directory = getDirectory(index);
-
-			synchronized (directory) {
+			synchronized (writers) {
 
 				if (writers.containsKey(index)) {
 					IndexWriter writer = writers.remove(index);
