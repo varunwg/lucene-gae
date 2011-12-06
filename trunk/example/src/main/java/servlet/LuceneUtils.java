@@ -14,10 +14,11 @@ import org.apache.lucene.index.SerialMergeScheduler;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.gae.datastore.DataStoreDirectory;
 import org.apache.lucene.store.profile.Profile;
 import org.apache.lucene.store.profile.ProfileDirectory;
 import org.apache.lucene.util.Version;
+
+import com.googlecode.lucene.gae.datastore.DataStoreDirectory;
 
 public class LuceneUtils {
 
