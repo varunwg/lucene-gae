@@ -22,13 +22,15 @@ import com.googlecode.lucene.gae.datastore.DataStoreDirectory;
 
 public class LuceneUtils {
 
-	public static final int						NUMBER_OF_DIRECTORYS	= 10;
+	public static final int								NUMBER_OF_DIRECTORYS	= 10;
 
-	private static Map<Integer, Directory>		directorys				= new HashMap<Integer, Directory>();
-	private static Map<Integer, IndexSearcher>	searchers				= new HashMap<Integer, IndexSearcher>();
-	private static Map<Integer, IndexWriter>	writers					= new HashMap<Integer, IndexWriter>();
+	public static final Version							VERSION					= Version.LUCENE_34;
 
-	private static final Analyzer				analyzer				= new StandardAnalyzer(Version.LUCENE_33);
+	private static final Map<Integer, Directory>		directorys				= new HashMap<Integer, Directory>();
+	private static final Map<Integer, IndexSearcher>	searchers				= new HashMap<Integer, IndexSearcher>();
+	private static final Map<Integer, IndexWriter>		writers					= new HashMap<Integer, IndexWriter>();
+
+	private static final Analyzer						analyzer				= new StandardAnalyzer(VERSION);
 
 	static {
 
@@ -44,7 +46,7 @@ public class LuceneUtils {
 	}
 
 	public static QueryParser createQuery(String field) {
-		return new QueryParser(Version.LUCENE_33, field, analyzer);
+		return new QueryParser(VERSION, field, analyzer);
 	}
 
 	public static Analyzer getAnalyzer() {
@@ -185,7 +187,7 @@ public class LuceneUtils {
 
 	private static IndexWriter createWriter(Directory directory, int index) {
 		try {
-			IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_33, getAnalyzer());
+			IndexWriterConfig iwc = new IndexWriterConfig(VERSION, getAnalyzer());
 			iwc.setMergeScheduler(new SerialMergeScheduler());
 			return new IndexWriter(directory, iwc);
 		} catch (Exception e) {
@@ -194,7 +196,6 @@ public class LuceneUtils {
 	}
 
 	private LuceneUtils() {
-		// TODO Auto-generated constructor stub
 	}
 
 }
