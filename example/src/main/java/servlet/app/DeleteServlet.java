@@ -6,9 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.lucene.store.gae.datastore.file.DataStoreFileRepository;
-
 import servlet.LuceneUtils;
+
+import com.googlecode.lucene.gae.datastore.file.DataStoreFileRepository;
 
 @SuppressWarnings("serial")
 public class DeleteServlet extends BaseHttpServlet {
