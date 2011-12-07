@@ -3,7 +3,7 @@
 	<cron>
 		<url>/testTask</url>
 		<description>Index a test texts every 10 minutes</description>
-		<schedule>every 10 minutes</schedule>
+		<schedule>every 10 hours</schedule>
 	</cron>
 	<cron>
 		<url>/otimizeTask</url>
@@ -13,6 +13,6 @@
 	<cron>
 		<url>/deleteTask</url>
 		<description>Delete deleted files every 10 minutes</description>
-		<schedule>every 30 minutes</schedule>
+		<schedule>every 30 hours</schedule>
 	</cron>
 </cronentries>
