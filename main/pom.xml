@@ -9,7 +9,7 @@
 
 	<properties>
 		<gae.version>1.5.5</gae.version>
-		<lucene.version>3.4.0</lucene.version>
+		<lucene.version>3.3.0</lucene.version>
 		<junit.version>4.10</junit.version>
 	</properties>
 
