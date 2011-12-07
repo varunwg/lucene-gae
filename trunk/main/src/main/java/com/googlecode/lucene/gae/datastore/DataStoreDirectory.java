@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
-import org.apache.lucene.store.SingleInstanceLockFactory;
+import org.apache.lucene.store.NoLockFactory;
 
 import com.googlecode.lucene.gae.datastore.file.DataStoreFile;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFileRepository;
@@ -23,7 +23,7 @@ public class DataStoreDirectory extends Directory {
 	}
 
 	public DataStoreDirectory(String indexName) throws IOException {
-		setLockFactory(new SingleInstanceLockFactory());
+		setLockFactory(NoLockFactory.getNoLockFactory());
 		this.repository = new DataStoreFileRepository(indexName);
 	}
 
