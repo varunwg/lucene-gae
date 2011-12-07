@@ -11,6 +11,7 @@ public class DataStoreFile {
 
 	private long							lastModified	= System.currentTimeMillis();
 	private boolean							deleted			= false;
+	private long							length			= 0L;
 
 	public DataStoreFile(String name) {
 		this.name = name;
@@ -33,13 +34,19 @@ public class DataStoreFile {
 
 	public long getLength() {
 
-		long length = 0;
+		long len = this.length;
 
-		for (DataStoreFilePart part : parts) {
-			length += part.getLength();
+		if (!parts.isEmpty()) {
+
+			len = 0;
+
+			for (DataStoreFilePart part : parts) {
+				len += part.getLength();
+			}
+
 		}
 
-		return length;
+		return len;
 
 	}
 
@@ -70,19 +77,19 @@ public class DataStoreFile {
 			int start = DataStoreFilePart.getStartForPos(position);
 			int canRead = DataStoreFilePart.MAX_SIZE - start;
 
-			int length = left;
+			int size = left;
 
 			if (canRead < left) {
-				length = canRead;
+				size = canRead;
 			}
 
 			int index = DataStoreFilePart.getIndexForPos(position);
 
 			DataStoreFilePart part = parts.get(index);
-			part.read(bytes, begin, start, length);
+			part.read(bytes, begin, start, size);
 
-			position += length;
-			begin += length;
+			position += size;
+			begin += size;
 
 		}
 
@@ -107,19 +114,19 @@ public class DataStoreFile {
 			int start = DataStoreFilePart.getStartForPos(position);
 			int canWrite = DataStoreFilePart.MAX_SIZE - start;
 
-			int length = left;
+			int size = left;
 
 			if (canWrite < left) {
-				length = canWrite;
+				size = canWrite;
 			}
 
 			int index = DataStoreFilePart.getIndexForPos(position);
 
 			DataStoreFilePart part = parts.get(index);
-			part.write(bytes, begin, start, length);
+			part.write(bytes, begin, start, size);
 
-			position += length;
-			begin += length;
+			position += size;
+			begin += size;
 
 		}
 
@@ -137,6 +144,10 @@ public class DataStoreFile {
 
 	void setLastModified(long time) {
 		this.lastModified = time;
+	}
+
+	void setLength(long length) {
+		this.length = length;
 	}
 
 }

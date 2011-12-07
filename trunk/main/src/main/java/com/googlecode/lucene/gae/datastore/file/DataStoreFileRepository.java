@@ -167,6 +167,7 @@ public class DataStoreFileRepository {
 		String fName = entity.getKey().getName();
 
 		DataStoreFile file = new DataStoreFile(fName);
+		file.setLength((Long) entity.getProperty("length"));
 		file.setLastModified((Long) entity.getProperty("lastModified"));
 		file.setDeleted((Boolean) entity.getProperty("deleted"));
 
