@@ -24,7 +24,7 @@ public class LuceneUtils {
 
 	public static final int								NUMBER_OF_DIRECTORYS	= 10;
 
-	public static final Version							VERSION					= Version.LUCENE_34;
+	public static final Version							VERSION					= Version.LUCENE_33;
 
 	private static final Map<Integer, Directory>		directorys				= new HashMap<Integer, Directory>();
 	private static final Map<Integer, IndexSearcher>	searchers				= new HashMap<Integer, IndexSearcher>();
@@ -53,15 +53,15 @@ public class LuceneUtils {
 		return analyzer;
 	}
 
-	public static Directory getDirectory(int index) throws IOException {
+	public static Directory getDirectory(Integer index) throws IOException {
 		return directorys.get(index);
 	}
 
-	public static String getNameForDirectory(int index) {
+	public static String getNameForDirectory(Integer index) {
 		return "Index" + index;
 	}
 
-	public static IndexSearcher getSearcher(int index) throws IOException {
+	public static IndexSearcher getSearcher(Integer index) throws IOException {
 
 		Profile prof = new Profile("getIndexSearcher").start();
 
@@ -85,7 +85,7 @@ public class LuceneUtils {
 
 	}
 
-	public static IndexWriter getWriter(int index) throws IOException {
+	public static IndexWriter getWriter(Integer index) throws IOException {
 
 		Profile prof = new Profile("getIndexWriter").start();
 
@@ -109,7 +109,7 @@ public class LuceneUtils {
 
 	}
 
-	public static void resetSearcher(int index) {
+	public static void resetSearcher(Integer index) {
 
 		Profile prof = new Profile("resetSearcher").start();
 
@@ -118,8 +118,18 @@ public class LuceneUtils {
 			synchronized (searchers) {
 
 				if (searchers.containsKey(index)) {
+
 					IndexSearcher searcher = searchers.remove(index);
-					searcher.close();
+
+					if (searcher != null) {
+						try {
+							searcher.close();
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}
+
+					}
+
 				}
 
 			}
@@ -132,23 +142,27 @@ public class LuceneUtils {
 
 	}
 
-	public static void resetWriter(int index) {
+	public static void resetWriter(Integer index) {
 
 		Profile prof = new Profile("resetWriter").start();
 
-		try {
+		synchronized (writers) {
 
-			synchronized (writers) {
+			if (writers.containsKey(index)) {
 
-				if (writers.containsKey(index)) {
-					IndexWriter writer = writers.remove(index);
-					writer.close();
+				IndexWriter writer = writers.remove(index);
+
+				if (writer != null) {
+					try {
+						writer.close();
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+
 				}
 
 			}
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
 
 		prof.end().log();
@@ -169,6 +183,8 @@ public class LuceneUtils {
 			doc.add(new Field("id", id, Field.Store.YES, Field.Index.NOT_ANALYZED));
 			doc.add(new Field("text", text, Field.Store.YES, Field.Index.ANALYZED));
 
+			System.err.println("Doc: Id=" + id + ",text=" + text);
+
 			writer.addDocument(doc);
 
 			i++;
@@ -177,7 +193,7 @@ public class LuceneUtils {
 
 	}
 
-	private static IndexSearcher createSearcher(Directory directory, int index) {
+	private static IndexSearcher createSearcher(Directory directory, Integer index) {
 		try {
 			return new IndexSearcher(directory, true);
 		} catch (Exception e) {
@@ -185,7 +201,7 @@ public class LuceneUtils {
 		}
 	}
 
-	private static IndexWriter createWriter(Directory directory, int index) {
+	private static IndexWriter createWriter(Directory directory, Integer index) {
 		try {
 			IndexWriterConfig iwc = new IndexWriterConfig(VERSION, getAnalyzer());
 			iwc.setMergeScheduler(new SerialMergeScheduler());
