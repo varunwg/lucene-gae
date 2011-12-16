@@ -1,8 +1,14 @@
 package com.googlecode.lucene.gae.datastore.file;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class DataStoreFilePart {
 
-	public static final int	MAX_SIZE	= 500;
+	public static final int	MAX_SIZE	= 5000;
+
+	public static final int	BLOCK_SIZE	= 500;
 
 	public static int getIndexForPos(long pos) {
 		return (int) (pos / MAX_SIZE);
@@ -68,12 +74,40 @@ public class DataStoreFilePart {
 
 	}
 
-	byte[] getBytes() {
-		return bytes;
+	int getByteBlocksCount() {
+		return (int) (length / BLOCK_SIZE) + 1;
 	}
 
-	void setBytes(byte[] bytes) {
-		this.bytes = bytes;
+	List<byte[]> getByteBlocks() {
+
+		int count = getByteBlocksCount();
+
+		List<byte[]> blocks = new ArrayList<byte[]>(count);
+
+		for (int i = 0; i < count; i++) {
+			int begin = i * BLOCK_SIZE;
+			int len = this.length - begin;
+			byte[] block = new byte[len];
+			System.arraycopy(bytes, begin, block, 0, len);
+			blocks.add(block);
+		}
+
+		return blocks;
+
+	}
+
+	void setByteBlocks(List<byte[]> blocks) {
+
+		int count = blocks.size();
+
+		Iterator<byte[]> iter = blocks.iterator();
+
+		for (int i = 0; i < count; i++) {
+			byte[] block = iter.next();
+			int begin = i * BLOCK_SIZE;
+			System.arraycopy(block, 0, bytes, begin, block.length);
+		}
+
 	}
 
 	void setLength(int length) {
