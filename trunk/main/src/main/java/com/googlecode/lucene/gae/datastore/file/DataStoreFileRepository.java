@@ -149,7 +149,16 @@ public class DataStoreFileRepository {
 			if (part.isModified()) {
 
 				Entity pEntity = new Entity(FILE_PART_KIND, part.getName(), fEntity.getKey());
-				pEntity.setProperty("bytes", new ShortBlob(part.getBytes()));
+
+				List<byte[]> blocks = part.getByteBlocks();
+
+				int j = 0;
+				for (byte[] bytes : blocks) {
+					pEntity.setProperty("block" + j, new ShortBlob(bytes));
+					j++;
+				}
+
+				pEntity.setProperty("blocks", blocks.size());
 				pEntity.setProperty("length", part.getLength());
 
 				entities.add(pEntity);
@@ -176,25 +185,38 @@ public class DataStoreFileRepository {
 			Long size = (Long) entity.getProperty("parts");
 
 			for (int i = 0; i < size; i++) {
-
-				String pName = fName + "_" + i;
-
-				Entity pEntity = getPartEntityByName(fName, pName);
-
-				DataStoreFilePart part = new DataStoreFilePart(pName);
-
-				Long length = (Long) pEntity.getProperty("length");
-				ShortBlob blob = (ShortBlob) pEntity.getProperty("bytes");
-				part.setLength(length.intValue());
-				part.setBytes(blob.getBytes());
-
+				DataStoreFilePart part = getPart(fName, i);
 				file.getParts().add(part);
-
 			}
 
 		}
 
 		return file;
+
+	}
+
+	private DataStoreFilePart getPart(String fName, int index) {
+
+		String pName = fName + "_" + index;
+
+		Entity pEntity = getPartEntityByName(fName, pName);
+
+		DataStoreFilePart part = new DataStoreFilePart(pName);
+
+		Long length = (Long) pEntity.getProperty("length");
+		Long blockCount = (Long) pEntity.getProperty("blocks");
+
+		List<byte[]> blocks = new ArrayList<byte[]>(blockCount.intValue());
+
+		for (int i = 0; i < blockCount; i++) {
+			ShortBlob block = (ShortBlob) pEntity.getProperty("block" + i);
+			blocks.add(block.getBytes());
+		}
+
+		part.setByteBlocks(blocks);
+		part.setLength(length.intValue());
+
+		return part;
 
 	}
 
