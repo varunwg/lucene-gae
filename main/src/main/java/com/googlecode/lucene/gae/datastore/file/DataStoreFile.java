@@ -22,10 +22,8 @@ public class DataStoreFile {
 	}
 
 	public void createNewPart() {
-
 		DataStoreFilePart part = new DataStoreFilePart(this.name + "_" + parts.size(), true);
 		parts.add(part);
-
 	}
 
 	public long getLastModified() {
