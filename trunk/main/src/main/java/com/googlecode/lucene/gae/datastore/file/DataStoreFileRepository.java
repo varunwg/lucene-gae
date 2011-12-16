@@ -3,6 +3,7 @@ package com.googlecode.lucene.gae.datastore.file;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -11,7 +12,6 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.ShortBlob;
 
 public class DataStoreFileRepository {
 
@@ -137,10 +137,10 @@ public class DataStoreFileRepository {
 		List<Entity> entities = new ArrayList<Entity>();
 
 		Entity fEntity = new Entity(FILE_KIND, file.getName());
-		fEntity.setProperty("length", file.getLength());
-		fEntity.setProperty("lastModified", file.getLastModified());
 		fEntity.setProperty("deleted", file.isDeleted());
-		fEntity.setProperty("parts", file.getParts().size());
+		fEntity.setUnindexedProperty("length", file.getLength());
+		fEntity.setUnindexedProperty("lastModified", file.getLastModified());
+		fEntity.setUnindexedProperty("parts", file.getParts().size());
 
 		entities.add(fEntity);
 
@@ -154,12 +154,12 @@ public class DataStoreFileRepository {
 
 				int j = 0;
 				for (byte[] bytes : blocks) {
-					pEntity.setProperty("block" + j, new ShortBlob(bytes));
+					pEntity.setUnindexedProperty("block" + j, new Blob(bytes));
 					j++;
 				}
 
-				pEntity.setProperty("blocks", blocks.size());
-				pEntity.setProperty("length", part.getLength());
+				pEntity.setUnindexedProperty("blocks", blocks.size());
+				pEntity.setUnindexedProperty("length", part.getLength());
 
 				entities.add(pEntity);
 
@@ -209,7 +209,7 @@ public class DataStoreFileRepository {
 		List<byte[]> blocks = new ArrayList<byte[]>(blockCount.intValue());
 
 		for (int i = 0; i < blockCount; i++) {
-			ShortBlob block = (ShortBlob) pEntity.getProperty("block" + i);
+			Blob block = (Blob) pEntity.getProperty("block" + i);
 			blocks.add(block.getBytes());
 		}
 

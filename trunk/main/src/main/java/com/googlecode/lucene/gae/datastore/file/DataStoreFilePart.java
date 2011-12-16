@@ -6,9 +6,9 @@ import java.util.List;
 
 public class DataStoreFilePart {
 
-	public static final int	MAX_SIZE	= 5000;
-
-	public static final int	BLOCK_SIZE	= 500;
+	public static final int	BLOCK_COUNT	= 10;
+	public static final int	BLOCK_SIZE	= 1024;
+	public static final int	MAX_SIZE	= BLOCK_SIZE * BLOCK_COUNT;
 
 	public static int getIndexForPos(long pos) {
 		return (int) (pos / MAX_SIZE);
