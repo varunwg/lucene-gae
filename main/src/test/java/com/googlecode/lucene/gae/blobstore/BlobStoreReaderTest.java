@@ -9,9 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.lucene.gae.TestUtils;
-import com.googlecode.lucene.gae.blobstore.BlobStoreDirectory;
 
-public class TestReader {
+public class BlobStoreReaderTest {
 
 	@Before
 	public void setUp() throws Exception {

@@ -28,10 +28,10 @@ public class TestUtils {
 
 	public static class IndexStatus {
 
-		private boolean	hasDeletions;
-		private boolean	optimized;
-		private long	maxDoc;
-		private long	numDocs;
+		private boolean hasDeletions;
+		private boolean optimized;
+		private long maxDoc;
+		private long numDocs;
 
 		public long getMaxDoc() {
 			return maxDoc;
@@ -67,14 +67,14 @@ public class TestUtils {
 
 	}
 
-	public static final String				TEST_INDEX_PATH		= "./lucene";
-	public static final String				TEST_INDEX_FIELD	= "title";
+	public static final String TEST_INDEX_PATH = "./lucene";
+	public static final String TEST_INDEX_FIELD = "title";
 
-	private static final Version			TEST_LUCENE_VERSION	= Version.LUCENE_33;
-	private static final Analyzer			ANALYZER			= new StandardAnalyzer(TEST_LUCENE_VERSION);
-	private static final File				TEST_INDEX_DIR		= new File(TEST_INDEX_PATH);
+	private static final Version TEST_LUCENE_VERSION = Version.LUCENE_33;
+	private static final Analyzer ANALYZER = new StandardAnalyzer(TEST_LUCENE_VERSION);
+	private static final File TEST_INDEX_DIR = new File(TEST_INDEX_PATH);
 
-	private static LocalServiceTestHelper	helper;
+	private static LocalServiceTestHelper helper;
 
 	public static Directory createTestDirectory() throws Exception {
 		return new SimpleFSDirectory(TEST_INDEX_DIR);
@@ -146,7 +146,11 @@ public class TestUtils {
 
 	public static void tearDown() throws Exception {
 
-		helper.tearDown();
+		try {
+			helper.tearDown();
+		} catch (Throwable e) {
+			// TODO: handle exception
+		}
 
 		FileUtils.deleteDirectory(TEST_INDEX_DIR);
 
