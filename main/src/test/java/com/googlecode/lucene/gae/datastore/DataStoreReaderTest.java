@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.googlecode.lucene.gae.TestUtils;
 import com.googlecode.lucene.gae.datastore.DataStoreDirectory;
 
-public class TestReader2 {
+public class DataStoreReaderTest {
 
 	@Before
 	public void setUp() throws Exception {

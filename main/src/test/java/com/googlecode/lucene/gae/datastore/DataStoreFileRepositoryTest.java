@@ -17,11 +17,9 @@ import com.googlecode.lucene.gae.TestUtils;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFile;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFileRepository;
 
-public class TestDataStoreFileRepository {
+public class DataStoreFileRepositoryTest {
 
 	private DataStoreFileRepository repository;
-
-	FileService fileService = FileServiceFactory.getFileService();
 
 	@Before
 	public void setUp() throws Exception {
@@ -75,7 +73,7 @@ public class TestDataStoreFileRepository {
 		result.createNewPart();
 		result.createNewPart();
 		result.createNewPart();
-		return result ;
+		return result;
 	}
 
 }
