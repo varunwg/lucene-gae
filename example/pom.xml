@@ -12,42 +12,30 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<downloadSources>true</downloadSources>
 		<java.version>1.6</java.version>
-		<gae.version>1.5.5</gae.version>
-		<lucene.version>3.3.0</lucene.version>
+		<gae.version>1.6.0</gae.version>
+		<lucene-gae.version>0.0.1-SNAPSHOT</lucene-gae.version>
 	</properties>
 
 	<dependencies>
-		<!-- Dependencias de Runtime e da GAE -->
+	
+		<!-- Dependencias da API da App Engine -->
 		<dependency>
-			<groupId>net.kindleit</groupId>
-			<artifactId>gae-runtime</artifactId>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-1.0-sdk</artifactId>
 			<version>${gae.version}</version>
-			<type>pom</type>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-api-labs</artifactId>
+			<artifactId>appengine-tools-sdk</artifactId>
 			<version>${gae.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-api-stubs</artifactId>
-			<version>${gae.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-testing</artifactId>
-			<version>${gae.version}</version>
-			<scope>test</scope>
+			<scope>compile</scope>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>${lucene.version}</version>
+			<groupId>com.googlecode</groupId>
+			<artifactId>lucene-gae</artifactId>
+			<version>${lucene-gae.version}</version>
 		</dependency>
 		
 		<dependency>
@@ -81,6 +69,7 @@
 			<artifactId>jsr107cache</artifactId>
 			<version>1.1</version>
 		</dependency>
+		
 	</dependencies>
 
 </project>
