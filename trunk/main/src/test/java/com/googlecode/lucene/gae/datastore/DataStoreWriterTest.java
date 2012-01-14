@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.googlecode.lucene.gae.TestUtils;
 
-public class TestWriter2 {
+public class DataStoreWriterTest {
 
 	@Before
 	public void setUp() throws Exception {
