@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+	<cron>
+		<url>/testTask</url>
+		<description>Index a test texts every 10 minutes</description>
+		<schedule>every 10 minutes</schedule>
+	</cron>
+	<cron>
+		<url>/otimizeTask</url>
+		<description>Otimize deleted files every 10 minutes</description>
+		<schedule>every 30 minutes</schedule>
+	</cron>
+	<cron>
+		<url>/deleteTask</url>
+		<description>Delete deleted files every 10 minutes</description>
+		<schedule>every 40 minutes</schedule>
+	</cron>
+</cronentries>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>index</servlet-name>
+		<servlet-class>servlet.app.IndexServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>search</servlet-name>
+		<servlet-class>servlet.app.SearchServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>delete</servlet-name>
+		<servlet-class>servlet.app.DeleteServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>testTaskServlet</servlet-name>
+		<servlet-class>servlet.task.TestTaskServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>otimizeTaskServlet</servlet-name>
+		<servlet-class>servlet.task.OtimizeTaskServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>deleteTaskServlet</servlet-name>
+		<servlet-class>servlet.task.DeleteTaskServlet</servlet-class>
+	</servlet>
+
+
+
+	<servlet-mapping>
+		<servlet-name>index</servlet-name>
+		<url-pattern>/index</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>search</servlet-name>
+		<url-pattern>/search</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>delete</servlet-name>
+		<url-pattern>/delete</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>otimizeTaskServlet</servlet-name>
+		<url-pattern>/otimizeTask</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>testTaskServlet</servlet-name>
+		<url-pattern>/testTask</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>deleteTaskServlet</servlet-name>
+		<url-pattern>/deleteTask</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+</web-app>
