@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.googlecode.lucene.gae.TestUtils;
 import com.googlecode.lucene.gae.blobstore.BlobStoreDirectory;
 
-public class TestWriter {
+public class BlobStoreWriterTest {
 
 	@Before
 	public void setUp() throws Exception {
