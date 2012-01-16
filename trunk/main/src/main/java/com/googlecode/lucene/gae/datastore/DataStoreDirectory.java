@@ -58,7 +58,7 @@ public class DataStoreDirectory extends Directory {
 
 	}
 
-	public void deleteUnusedFiles() throws IOException {
+	public void cleanDeletedFiles() throws IOException {
 
 		List<String> names = repository.listDeletedNames();
 
@@ -114,7 +114,7 @@ public class DataStoreDirectory extends Directory {
 		return new DataStoreIndexInput(file);
 
 	}
-	
+
 	@Override
 	public void touchFile(String name) throws IOException {
 
