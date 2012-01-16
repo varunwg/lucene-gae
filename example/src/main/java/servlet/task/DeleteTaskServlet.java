@@ -21,7 +21,7 @@ public class DeleteTaskServlet extends BaseTaskHttpServlet {
 		String name = LuceneUtils.getNameForDirectory(index);
 		DataStoreDirectory directory = new DataStoreDirectory(name);
 
-		directory.deleteUnusedFiles();
+		directory.cleanDeletedFiles();
 
 		System.out.println("Index=" + index);
 
