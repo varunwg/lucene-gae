@@ -14,9 +14,9 @@ import com.googlecode.lucene.gae.datastore.file.DataStoreFileRepository;
 
 public class DataStoreDirectory extends Directory {
 
-	private static final String				DEFAULT_INDEX_NAME	= "default";
+	private static final String DEFAULT_INDEX_NAME = "default";
 
-	private final DataStoreFileRepository	repository;
+	private final DataStoreFileRepository repository;
 
 	public DataStoreDirectory() throws IOException {
 		this(DEFAULT_INDEX_NAME);
@@ -46,6 +46,26 @@ public class DataStoreDirectory extends Directory {
 	@Override
 	public void deleteFile(String name) throws IOException {
 		repository.delete(name);
+	}
+
+	public void deleteFiles() throws IOException {
+
+		List<String> names = repository.listNames();
+
+		for (String name : names) {
+			repository.delete(name);
+		}
+
+	}
+
+	public void deleteUnusedFiles() throws IOException {
+
+		List<String> names = repository.listDeletedNames();
+
+		for (String name : names) {
+			repository.delete(name);
+		}
+
 	}
 
 	@Override
@@ -94,7 +114,7 @@ public class DataStoreDirectory extends Directory {
 		return new DataStoreIndexInput(file);
 
 	}
-
+	
 	@Override
 	public void touchFile(String name) throws IOException {
 
