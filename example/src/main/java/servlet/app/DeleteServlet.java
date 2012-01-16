@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import servlet.LuceneUtils;
 
-import com.googlecode.lucene.gae.datastore.file.DataStoreFileRepository;
+import com.googlecode.lucene.gae.datastore.DataStoreDirectory;
 
 @SuppressWarnings("serial")
 public class DeleteServlet extends BaseHttpServlet {
@@ -23,9 +23,9 @@ public class DeleteServlet extends BaseHttpServlet {
 
 			String name = LuceneUtils.getNameForDirectory(index);
 
-			DataStoreFileRepository instance = new DataStoreFileRepository(name);
+			DataStoreDirectory directory = new DataStoreDirectory(name);
 
-			instance.deleteAll();
+			directory.deleteFiles();
 
 		}
 
