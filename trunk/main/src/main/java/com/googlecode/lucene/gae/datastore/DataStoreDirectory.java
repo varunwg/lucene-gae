@@ -9,10 +9,11 @@ import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.store.NoLockFactory;
 
+import com.googlecode.lucene.gae.CleanableDirectory;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFile;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFileRepository;
 
-public class DataStoreDirectory extends Directory {
+public class DataStoreDirectory extends Directory implements CleanableDirectory {
 
 	private static final String DEFAULT_INDEX_NAME = "default";
 
@@ -25,6 +26,16 @@ public class DataStoreDirectory extends Directory {
 	public DataStoreDirectory(String indexName) throws IOException {
 		setLockFactory(NoLockFactory.getNoLockFactory());
 		this.repository = new DataStoreFileRepository(indexName);
+	}
+
+	public void cleanFiles() throws IOException {
+
+		List<String> names = repository.listDeletedNames();
+
+		for (String name : names) {
+			repository.delete(name);
+		}
+
 	}
 
 	@Override
@@ -51,16 +62,6 @@ public class DataStoreDirectory extends Directory {
 	public void deleteFiles() throws IOException {
 
 		List<String> names = repository.listNames();
-
-		for (String name : names) {
-			repository.delete(name);
-		}
-
-	}
-
-	public void cleanDeletedFiles() throws IOException {
-
-		List<String> names = repository.listDeletedNames();
 
 		for (String name : names) {
 			repository.delete(name);

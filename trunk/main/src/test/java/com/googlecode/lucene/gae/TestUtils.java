@@ -1,5 +1,7 @@
 package com.googlecode.lucene.gae;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.util.Arrays;
 
@@ -8,15 +10,14 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.apache.lucene.util.Version;
 
@@ -26,97 +27,59 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 public class TestUtils {
 
-	public static class IndexStatus {
+	public static final String TEST_INDEX_PATH = "./lucene";
+	public static final String DEST_INDEX_PATH = "./dest";
+	public static final String TEST_INDEX_FIELD = "title";
 
-		private boolean hasDeletions;
-		private boolean optimized;
-		private long maxDoc;
-		private long numDocs;
+	public static final File TEST_INDEX_DIR = new File(TEST_INDEX_PATH);
+	public static final File DEST_INDEX_DIR = new File(DEST_INDEX_PATH);
 
-		public long getMaxDoc() {
-			return maxDoc;
-		}
+	public static final Version TEST_LUCENE_VERSION = Version.LUCENE_34;
+	public static final Analyzer ANALYZER = new StandardAnalyzer(TEST_LUCENE_VERSION);
 
-		public long getNumDocs() {
-			return numDocs;
-		}
+	private static LocalServiceTestHelper helper;
 
-		public boolean hasDeletions() {
-			return hasDeletions;
-		}
+	public static void compareDirs(Directory sysDir, Directory gaeDir) throws Exception {
 
-		public boolean isOptimized() {
-			return optimized;
-		}
+		for (String name : gaeDir.listAll()) {
 
-		protected void setHasDeletions(boolean hasDeletions) {
-			this.hasDeletions = hasDeletions;
-		}
+			IndexInput sysIn = sysDir.openInput(name);
+			IndexInput gaeIn = gaeDir.openInput(name);
 
-		protected void setMaxDoc(long maxDoc) {
-			this.maxDoc = maxDoc;
-		}
+			assertEquals(name, sysIn.length(), gaeIn.length());
 
-		protected void setNumDocs(long numDocs) {
-			this.numDocs = numDocs;
-		}
+			byte[] fileBytes = readIndex(sysIn);
+			byte[] gaeBytes = readIndex(gaeIn);
 
-		protected void setOptimized(boolean optimized) {
-			this.optimized = optimized;
+			if (!"segments_1".equals(name)) {
+				assertEquals(name, TestUtils.toString(fileBytes), TestUtils.toString(gaeBytes));
+			} else {
+
+				byte[] fileSegmentHead = TestUtils.subArray(fileBytes, 0, 9);
+				byte[] gaeSegmentHead = TestUtils.subArray(gaeBytes, 0, 9);
+
+				byte[] fileSegmentBody = TestUtils.subArray(fileBytes, 12, fileBytes.length - 4);
+				byte[] gaeSegmentBody = TestUtils.subArray(gaeBytes, 12, fileBytes.length - 4);
+
+				assertEquals(name, TestUtils.toString(fileSegmentHead), TestUtils.toString(gaeSegmentHead));
+				assertEquals(name, TestUtils.toString(fileSegmentBody), TestUtils.toString(gaeSegmentBody));
+
+			}
+
 		}
 
 	}
 
-	public static final String TEST_INDEX_PATH = "./lucene";
-	public static final String TEST_INDEX_FIELD = "title";
-
-	private static final Version TEST_LUCENE_VERSION = Version.LUCENE_33;
-	private static final Analyzer ANALYZER = new StandardAnalyzer(TEST_LUCENE_VERSION);
-	private static final File TEST_INDEX_DIR = new File(TEST_INDEX_PATH);
-
-	private static LocalServiceTestHelper helper;
+	public static Directory createDestDirectory() throws Exception {
+		return new SimpleFSDirectory(DEST_INDEX_DIR);
+	}
 
 	public static Directory createTestDirectory() throws Exception {
 		return new SimpleFSDirectory(TEST_INDEX_DIR);
 	}
 
-	public static void delete(Directory dir, String query) throws Exception {
-
-		IndexReader reader = IndexReader.open(dir, false);
-
-		TopDocs search = TestUtils.search(dir, query);
-
-		for (ScoreDoc doc : search.scoreDocs) {
-			reader.deleteDocument(doc.doc);
-		}
-
-		reader.close();
-
-	}
-
-	public static IndexStatus getStatus(Directory dir) throws Exception {
-
-		IndexReader reader = IndexReader.open(dir);
-
-		IndexStatus status = new IndexStatus();
-		status.setHasDeletions(reader.hasDeletions());
-		status.setOptimized(reader.isOptimized());
-		status.setNumDocs(reader.numDocs());
-		status.setMaxDoc(reader.maxDoc());
-
-		reader.close();
-
-		return status;
-
-	}
-
-	public static void optimize(Directory dir) throws Exception {
-
-		IndexWriterConfig config = new IndexWriterConfig(TEST_LUCENE_VERSION, ANALYZER);
-		IndexWriter writer = new IndexWriter(dir, config);
-		writer.optimize();
-		writer.close();
-
+	public static IndexWriterConfig getWriterConfig() {
+		return new IndexWriterConfig(TEST_LUCENE_VERSION, ANALYZER);
 	}
 
 	public static TopDocs search(Directory dir, String query) throws Exception {
@@ -141,6 +104,7 @@ public class TestUtils {
 		helper.setUp();
 
 		FileUtils.deleteDirectory(TEST_INDEX_DIR);
+		FileUtils.deleteDirectory(DEST_INDEX_DIR);
 
 	}
 
@@ -153,27 +117,11 @@ public class TestUtils {
 		}
 
 		FileUtils.deleteDirectory(TEST_INDEX_DIR);
+		FileUtils.deleteDirectory(DEST_INDEX_DIR);
 
 	}
 
-	public static void write(Directory dir, String... texts) throws Exception {
-
-		IndexWriterConfig config = new IndexWriterConfig(TEST_LUCENE_VERSION, ANALYZER);
-		IndexWriter writer = new IndexWriter(dir, config);
-
-		for (String text : texts) {
-
-			Document doc = new Document();
-			doc.add(new Field(TEST_INDEX_FIELD, text, Field.Store.YES, Field.Index.ANALYZED));
-			writer.addDocument(doc);
-
-		}
-
-		writer.close();
-
-	}
-
-	public static String getArray(byte[] b) {
+	public static String toString(byte[] b) {
 
 		StringBuilder builder = new StringBuilder();
 
@@ -190,23 +138,28 @@ public class TestUtils {
 
 	}
 
-	public static String getArray(byte[] b, int offset, int length) {
-		return getArray(subArray(b, offset, length));
+	public static void write(Directory dir, String... texts) throws Exception {
+
+		IndexWriter writer = new IndexWriter(dir, getWriterConfig());
+
+		for (String text : texts) {
+			Document doc = new Document();
+			doc.add(new Field(TEST_INDEX_FIELD, text, Field.Store.YES, Field.Index.ANALYZED));
+			writer.addDocument(doc);
+		}
+
+		writer.close();
+
 	}
 
-	public static void insert(byte[] target, byte[] source, int pos) {
-		System.arraycopy(source, 0, target, pos, source.length);
+	private static byte[] readIndex(IndexInput in) throws Exception {
+		byte[] b = new byte[(int) in.length()];
+		in.readBytes(b, 0, (int) in.length());
+		in.close();
+		return b;
 	}
 
-	public static void printArray(byte[] b) {
-		System.out.println(getArray(b));
-	}
-
-	public static void printArray(byte[] b, int offset, int length) {
-		printArray(subArray(b, offset, length));
-	}
-
-	public static byte[] subArray(byte[] bytes, int offset, int length) {
+	private static byte[] subArray(byte[] bytes, int offset, int length) {
 		return Arrays.copyOfRange(bytes, offset, length);
 	}
 
