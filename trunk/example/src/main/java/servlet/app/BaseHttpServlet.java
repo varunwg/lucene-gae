@@ -27,13 +27,13 @@ public class BaseHttpServlet extends HttpServlet {
 	protected String getText(HttpServletRequest req) {
 		return req.getParameter("text");
 	}
-	
+
 	protected String getSearch(HttpServletRequest req) {
 		return req.getParameter("q");
 	}
 
-	protected void redirectToIndex(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void redirectToIndex(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+			IOException {
 		String nextJSP = "/index.jsp";
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextJSP);
 		dispatcher.forward(req, resp);

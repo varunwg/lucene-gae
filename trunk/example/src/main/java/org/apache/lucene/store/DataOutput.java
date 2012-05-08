@@ -73,8 +73,8 @@ public abstract class DataOutput {
 	}
 
 	/**
-	 * Writes an int in a variable-length format. Writes between one and
-	 * five bytes. Smaller values take fewer bytes. Negative numbers are not
+	 * Writes an int in a variable-length format. Writes between one and five
+	 * bytes. Smaller values take fewer bytes. Negative numbers are not
 	 * supported.
 	 * 
 	 * @see DataInput#readVInt()
@@ -124,8 +124,8 @@ public abstract class DataOutput {
 		writeBytes(utf8Result.bytes, 0, utf8Result.length);
 	}
 
-	private static int	COPY_BUFFER_SIZE	= 16384;
-	private byte[]		copyBuffer;
+	private static int COPY_BUFFER_SIZE = 16384;
+	private byte[] copyBuffer;
 
 	/** Copy numBytes bytes from input to ourself. */
 	public void copyBytes(DataInput input, long numBytes) throws IOException {
@@ -146,8 +146,8 @@ public abstract class DataOutput {
 	}
 
 	/**
-	 * Writes a sub sequence of characters from s as the old
-	 * format (modified UTF-8 encoded bytes).
+	 * Writes a sub sequence of characters from s as the old format (modified
+	 * UTF-8 encoded bytes).
 	 * 
 	 * @param s
 	 *            the source of the characters
@@ -155,12 +155,11 @@ public abstract class DataOutput {
 	 *            the first character in the sequence
 	 * @param length
 	 *            the number of characters in the sequence
-	 * @deprecated -- please pre-convert to utf8 bytes
-	 *             instead or use {@link #writeString}
+	 * @deprecated -- please pre-convert to utf8 bytes instead or use
+	 *             {@link #writeString}
 	 */
 	@Deprecated
-	public void writeChars(String s, int start, int length)
-			throws IOException {
+	public void writeChars(String s, int start, int length) throws IOException {
 		final int end = start + length;
 		for (int i = start; i < end; i++) {
 			final int code = s.charAt(i);
@@ -178,8 +177,8 @@ public abstract class DataOutput {
 	}
 
 	/**
-	 * Writes a sub sequence of characters from char[] as
-	 * the old format (modified UTF-8 encoded bytes).
+	 * Writes a sub sequence of characters from char[] as the old format
+	 * (modified UTF-8 encoded bytes).
 	 * 
 	 * @param s
 	 *            the source of the characters
@@ -187,11 +186,11 @@ public abstract class DataOutput {
 	 *            the first character in the sequence
 	 * @param length
 	 *            the number of characters in the sequence
-	 * @deprecated -- please pre-convert to utf8 bytes instead or use {@link #writeString}
+	 * @deprecated -- please pre-convert to utf8 bytes instead or use
+	 *             {@link #writeString}
 	 */
 	@Deprecated
-	public void writeChars(char[] s, int start, int length)
-			throws IOException {
+	public void writeChars(char[] s, int start, int length) throws IOException {
 		final int end = start + length;
 		for (int i = start; i < end; i++) {
 			final int code = s[i];
@@ -217,6 +216,8 @@ public abstract class DataOutput {
 
 				String key = entry.getKey() == null ? "" : entry.getKey();
 				String value = entry.getValue() == null ? "" : entry.getValue();
+
+				System.out.println(key + "=" + value);
 
 				writeString(key);
 				writeString(value);
