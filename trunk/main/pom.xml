@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<downloadSources>true</downloadSources>
 		<java.version>1.6</java.version>
-		<gae.version>1.6.0</gae.version>
+		<gae.version>1.6.5</gae.version>
 		<lucene.version>3.4.0</lucene.version>
 		<junit.version>4.10</junit.version>
 		<commons-io.version>2.0.1</commons-io.version>
