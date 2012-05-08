@@ -11,8 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.appengine.api.files.FileService;
-import com.google.appengine.api.files.FileServiceFactory;
 import com.googlecode.lucene.gae.TestUtils;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFile;
 import com.googlecode.lucene.gae.datastore.file.DataStoreFileRepository;
