@@ -14,8 +14,7 @@ import servlet.LuceneUtils;
 public class IndexServlet extends BaseHttpServlet {
 
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		Integer index = getIndex(req);
 		String text = getText(req);
